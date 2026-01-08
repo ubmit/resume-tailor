@@ -11,6 +11,16 @@ export function buildPrompt(resume: Resume, jobDescription: string): string {
 4. If the candidate lacks a required skill, do NOT add it - focus on transferable skills they DO have
 5. STAR method rewrites must be based on the original bullet points, not invented
 
+## Accuracy Rules (STRICTLY ENFORCED)
+
+6. NEVER change what a product/project does - if it says "meeting room booking app", do NOT call it a "dashboard" or something else
+7. NEVER change who the users/customers are - if it says "collaborators", do NOT say "hoteliers" or any other group
+8. NEVER invent context, domain, or industry details not explicitly stated in the original
+9. PRESERVE the core meaning of each bullet - only improve clarity and structure, never replace facts
+10. When unsure about a detail, use the EXACT wording from the original resume
+11. ALWAYS preserve location details EXACTLY as shown - if it says "Porto, Portugal (Remote)", keep the working policy (Remote/Hybrid/On-site) in parentheses
+12. NEVER change cities or countries in locations - do NOT replace "Porto, Portugal" with "Hamburg, Germany" even if you know the company headquarters is elsewhere. Use ONLY the location stated in the original resume.
+
 ## Instructions
 
 1. **ATS Optimization**: Use keywords from the job description ONLY if they match skills already in the resume
@@ -36,7 +46,7 @@ ${resume.experience
   .map(
     (exp) => `
 **${exp.company}** | ${exp.role} | ${exp.location} | ${exp.period}
-${exp.bullets.map((b) => `- ${b}`).join("\n")}`
+${exp.bullets.map((b) => `- ${b}`).join("\n")}`,
   )
   .join("\n")}
 
@@ -61,7 +71,7 @@ Respond with ONLY a JSON object (no markdown code blocks, no explanation) in thi
     {
       "company": "Company Name",
       "role": "Role Title",
-      "location": "Location",
+      "location": "City, Country (Remote/Hybrid/On-site)",
       "period": "Start - End",
       "bullets": ["STAR-formatted bullet 1", "STAR-formatted bullet 2"]
     }
