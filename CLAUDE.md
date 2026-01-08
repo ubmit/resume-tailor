@@ -4,10 +4,10 @@
 
 CLI tool that tailors resumes for job applications. Three commands:
 1. `extract` - extracts text from existing PDF to create RESUME.md
-2. `prepare` - generates prompt for user to paste into claude.ai
-3. `generate` - converts Claude's JSON response into Typst/PDF
+2. `prepare` - generates prompt for user to paste into any LLM
+3. `generate` - converts LLM's JSON response into Typst/PDF
 
-No LLM API keys needed - user manually interacts with claude.ai.
+No LLM API keys needed - user manually interacts with any LLM (ChatGPT, Claude, Gemini, etc.).
 
 ## Tech Stack
 
@@ -24,7 +24,7 @@ No LLM API keys needed - user manually interacts with claude.ai.
 | `src/index.ts` | CLI entry, commander setup |
 | `src/extract-pdf.ts` | Extracts text from PDF files |
 | `src/parse-resume.ts` | Parses RESUME.md into typed object |
-| `src/prompt-builder.ts` | Builds prompt for Claude |
+| `src/prompt-builder.ts` | Builds prompt for LLM |
 | `src/typst-template.ts` | Generates .typ from tailored resume |
 | `src/compile.ts` | Shells out to `typst compile` |
 
@@ -39,7 +39,7 @@ RESUME.md + job.txt
        ↓
    [prepare]
        ↓
-   prompt.txt → user pastes to claude.ai → response.json
+   prompt.txt → user pastes to any LLM → response.json
        ↓
    [generate]
        ↓
