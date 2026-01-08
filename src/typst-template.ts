@@ -40,11 +40,11 @@ export function generateTypst(
   const contactParts: string[] = [];
   if (profile.email) contactParts.push(escapeTypst(profile.email));
   if (profile.phone) contactParts.push(escapeTypst(profile.phone));
-  if (profile.location) contactParts.push(escapeTypst(profile.location));
   if (profile.github)
     contactParts.push(`#link("https://${profile.github}")[${escapeTypst(profile.github)}]`);
   if (profile.linkedin)
     contactParts.push(`#link("https://${profile.linkedin}")[${escapeTypst(profile.linkedin)}]`);
+  if (profile.location) contactParts.push(escapeTypst(profile.location));
 
   const contact = contactParts.join(" | ");
 
