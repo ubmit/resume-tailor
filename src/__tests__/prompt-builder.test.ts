@@ -23,7 +23,14 @@ describe("buildPrompt", () => {
         bullets: ["Led team", "Built API"],
       },
     ],
-    education: [{ degree: "B.S. CS", institution: "MIT", year: "2018" }],
+    education: [
+      {
+        degree: "B.S. CS",
+        institution: "MIT",
+        startDate: "2016",
+        endDate: "2018",
+      },
+    ],
     languages: ["English (Native)"],
   };
 
@@ -40,7 +47,7 @@ describe("buildPrompt", () => {
     expect(prompt).toContain("**Acme Corp** | Senior Engineer | Remote | 2020 - Present");
     expect(prompt).toContain("- Led team");
     expect(prompt).toContain("- Built API");
-    expect(prompt).toContain("- B.S. CS | MIT | 2018");
+    expect(prompt).toContain("- B.S. CS | MIT | 2016 - 2018");
     expect(prompt).toContain("- English (Native)");
   });
 
@@ -139,14 +146,14 @@ describe("buildPrompt", () => {
     const resume: Resume = {
       ...fullResume,
       education: [
-        { degree: "M.S.", institution: "Stanford", year: "2020" },
-        { degree: "B.S.", institution: "MIT", year: "2018" },
+        { degree: "M.S.", institution: "Stanford", startDate: "2020", endDate: "2022" },
+        { degree: "B.S.", institution: "MIT", startDate: "2018", endDate: "2020" },
       ],
     };
 
     const prompt = buildPrompt(resume, "Job");
 
-    expect(prompt).toContain("- M.S. | Stanford | 2020");
-    expect(prompt).toContain("- B.S. | MIT | 2018");
+    expect(prompt).toContain("- M.S. | Stanford | 2020 - 2022");
+    expect(prompt).toContain("- B.S. | MIT | 2018 - 2020");
   });
 });

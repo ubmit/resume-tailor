@@ -127,11 +127,11 @@ pnpm extract -p <pdf-file> [-o <output-file>]
 
 # EDUCATION
 
-## Degree | Institution | Year
+## Degree | Institution | Start Date | End Date | Status (optional)
 
 # LANGUAGES
 
-- Language (Proficiency)
+- Language - Level/CEFR
 ```
 
 ## How It Works

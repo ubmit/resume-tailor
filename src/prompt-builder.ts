@@ -41,7 +41,7 @@ ${exp.bullets.map((b) => `- ${b}`).join("\n")}`
   .join("\n")}
 
 ### Education
-${resume.education.map((edu) => `- ${edu.degree} | ${edu.institution} | ${edu.year}`).join("\n")}
+${resume.education.map((edu) => `- ${edu.degree} | ${edu.institution} | ${edu.startDate} - ${edu.endDate}${edu.status ? ` (${edu.status})` : ""}`).join("\n")}
 
 ### Languages
 ${resume.languages.map((l) => `- ${l}`).join("\n")}
@@ -70,7 +70,9 @@ Respond with ONLY a JSON object (no markdown code blocks, no explanation) in thi
     {
       "degree": "Degree",
       "institution": "Institution",
-      "year": "Year"
+      "startDate": "September 2018",
+      "endDate": "September 2019",
+      "status": "Incomplete"
     }
   ],
   "languages": ["Language (Proficiency)"]

@@ -11,7 +11,9 @@ export interface Experience {
 export interface Education {
   degree: string;
   institution: string;
-  year: string;
+  startDate: string;
+  endDate: string;
+  status?: string;
 }
 
 export interface Resume {
@@ -139,13 +141,34 @@ function parseEducation(section: string): Education[] {
 
   for (const entry of entries) {
     const header = entry.split("\n")[0].trim();
-    const headerMatch = header.match(/(.+?)\s*\|\s*(.+?)\s*\|\s*(.+)/);
+    const fivePartMatch = header.match(
+      /(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+)/
+    );
+    const fourPartMatch = header.match(/(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+)/);
+    const threePartMatch = header.match(/(.+?)\s*\|\s*(.+?)\s*\|\s*(.+)/);
 
-    if (headerMatch) {
+    if (fivePartMatch) {
       education.push({
-        degree: headerMatch[1].trim(),
-        institution: headerMatch[2].trim(),
-        year: headerMatch[3].trim(),
+        degree: fivePartMatch[1].trim(),
+        institution: fivePartMatch[2].trim(),
+        startDate: fivePartMatch[3].trim(),
+        endDate: fivePartMatch[4].trim(),
+        status: fivePartMatch[5].trim(),
+      });
+    } else if (fourPartMatch) {
+      education.push({
+        degree: fourPartMatch[1].trim(),
+        institution: fourPartMatch[2].trim(),
+        startDate: fourPartMatch[3].trim(),
+        endDate: fourPartMatch[4].trim(),
+      });
+    } else if (threePartMatch) {
+      // Backward compatibility: old format "Degree | Institution | Year"
+      education.push({
+        degree: threePartMatch[1].trim(),
+        institution: threePartMatch[2].trim(),
+        startDate: threePartMatch[3].trim(),
+        endDate: threePartMatch[3].trim(),
       });
     }
   }

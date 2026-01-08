@@ -13,7 +13,9 @@ export interface TailoredResume {
   education: {
     degree: string;
     institution: string;
-    year: string;
+    startDate: string;
+    endDate: string;
+    status?: string;
   }[];
   languages: string[];
 }
@@ -60,12 +62,12 @@ ${bullets}`;
 
   const education = tailored.education
     .map(
-      (edu) =>
-        `- *${escapeTypst(edu.degree)}* | ${escapeTypst(edu.institution)} | ${escapeTypst(edu.year)}`
+      (edu) => `*${escapeTypst(edu.degree)}* #h(1fr) ${escapeTypst(edu.startDate)} - ${escapeTypst(edu.endDate)}
+${escapeTypst(edu.institution)} #h(1fr) ${edu.status ? `_(${escapeTypst(edu.status)})_` : ""}`
     )
-    .join("\n");
+    .join("\n\n");
 
-  const languages = tailored.languages.map((l) => escapeTypst(l)).join(" | ");
+  const languages = `■ ${tailored.languages.map((l) => escapeTypst(l)).join("    ")}`;
 
   return `#set page(margin: (x: 0.75in, y: 0.75in))
 #set text(font: "New Computer Modern", size: 10pt)

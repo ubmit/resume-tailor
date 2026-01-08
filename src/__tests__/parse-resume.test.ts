@@ -38,7 +38,7 @@ describe("parseResumeContent", () => {
 
 # EDUCATION
 
-## B.S. Computer Science | MIT | 2018
+## B.S. Computer Science | MIT | 2016 | 2018
 
 # LANGUAGES
 
@@ -77,7 +77,7 @@ describe("parseResumeContent", () => {
     });
 
     expect(result.education).toEqual([
-      { degree: "B.S. Computer Science", institution: "MIT", year: "2018" },
+      { degree: "B.S. Computer Science", institution: "MIT", startDate: "2016", endDate: "2018" },
     ]);
 
     expect(result.languages).toEqual(["English (Native)", "Spanish (Fluent)"]);
@@ -182,15 +182,25 @@ describe("parseResumeContent", () => {
   it("handles multiple education entries", () => {
     const content = `# EDUCATION
 
-## M.S. Computer Science | Stanford | 2020
-## B.S. Computer Science | MIT | 2018
+## M.S. Computer Science | Stanford | 2020 | 2022
+## B.S. Computer Science | MIT | 2018 | 2020
 `;
 
     const result = parseResumeContent(content);
 
     expect(result.education).toHaveLength(2);
-    expect(result.education[0].degree).toBe("M.S. Computer Science");
-    expect(result.education[1].degree).toBe("B.S. Computer Science");
+    expect(result.education[0]).toEqual({
+      degree: "M.S. Computer Science",
+      institution: "Stanford",
+      startDate: "2020",
+      endDate: "2022",
+    });
+    expect(result.education[1]).toEqual({
+      degree: "B.S. Computer Science",
+      institution: "MIT",
+      startDate: "2018",
+      endDate: "2020",
+    });
   });
 
   it("trims whitespace from parsed values", () => {

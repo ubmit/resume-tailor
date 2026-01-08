@@ -64,7 +64,7 @@ describe("generateTypst", () => {
         bullets: ["Led team of 5", "Built scalable API"],
       },
     ],
-    education: [{ degree: "B.S. CS", institution: "MIT", year: "2018" }],
+    education: [{ degree: "B.S. CS", institution: "MIT", startDate: "2016", endDate: "2018" }],
     languages: ["English (Native)"],
   };
 
@@ -117,15 +117,17 @@ describe("generateTypst", () => {
     const result = generateTypst(profile, tailored);
 
     expect(result).toContain("#section[Education]");
-    expect(result).toContain("*B.S. CS* | MIT | 2018");
+    expect(result).toContain("*B.S. CS*");
+    expect(result).toContain("2016 - 2018");
+    expect(result).toContain("MIT");
   });
 
-  it("includes languages section inline", () => {
+  it("includes languages section with bullet", () => {
     const result = generateTypst(profile, tailored);
 
     expect(result).toContain("#section[Languages]");
+    expect(result).toContain("■");
     expect(result).toContain("English (Native)");
-    expect(result).not.toContain("- English (Native)");
   });
 
   it("handles missing optional profile fields", () => {
@@ -203,18 +205,21 @@ describe("generateTypst", () => {
     const multiEduTailored: TailoredResume = {
       ...tailored,
       education: [
-        { degree: "M.S.", institution: "Stanford", year: "2020" },
-        { degree: "B.S.", institution: "MIT", year: "2018" },
+        { degree: "M.S.", institution: "Stanford", startDate: "2020", endDate: "2022" },
+        { degree: "B.S.", institution: "MIT", startDate: "2018", endDate: "2020" },
       ],
     };
 
     const result = generateTypst(profile, multiEduTailored);
 
-    expect(result).toContain("*M.S.* | Stanford | 2020");
-    expect(result).toContain("*B.S.* | MIT | 2018");
+    expect(result).toContain("*M.S.*");
+    expect(result).toContain("Stanford");
+    expect(result).toContain("2020 - 2022");
+    expect(result).toContain("*B.S.*");
+    expect(result).toContain("2018 - 2020");
   });
 
-  it("handles multiple languages inline with separator", () => {
+  it("handles multiple languages with bullet and spacing", () => {
     const multiLangTailored: TailoredResume = {
       ...tailored,
       languages: ["English (Native)", "Spanish (Fluent)", "French (Basic)"],
@@ -222,6 +227,9 @@ describe("generateTypst", () => {
 
     const result = generateTypst(profile, multiLangTailored);
 
-    expect(result).toContain("English (Native) | Spanish (Fluent) | French (Basic)");
+    expect(result).toContain("■");
+    expect(result).toContain("English (Native)");
+    expect(result).toContain("Spanish (Fluent)");
+    expect(result).toContain("French (Basic)");
   });
 });
