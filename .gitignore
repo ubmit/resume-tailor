@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+*.pdf
+*.typ
+RESUME.md
+response.json
+job.txt
+prompt.txt

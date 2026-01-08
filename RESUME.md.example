@@ -1,0 +1,46 @@
+# PROFILE
+
+**Name**: Guilherme Andrade
+**Email**: your.email@example.com
+**GitHub**: github.com/ubmit
+**LinkedIn**: linkedin.com/in/ubmit
+**Summary**: Senior Software Engineer with 8+ years of experience building scalable web applications and leading engineering teams. Passionate about clean code, developer experience, and shipping products that make a difference.
+
+# MAIN TECHS AND SKILLS
+
+- TypeScript, JavaScript, React, Node.js
+- PostgreSQL, Redis, GraphQL, REST APIs
+- AWS (Lambda, S3, ECS), Docker, CI/CD
+- Agile methodologies, code review, mentoring
+
+# PROFESSIONAL EXPERIENCE
+
+## Viz.ai | Senior Software Engineer | 2023 - Present
+- Built real-time medical imaging pipeline processing 10k+ scans daily
+- Led team of 4 engineers on stroke detection feature that reduced diagnosis time by 40%
+- Implemented HIPAA-compliant data handling across microservices
+
+## XING (New Work SE) | Software Engineer | 2020 - 2023
+- Developed job matching algorithms improving recommendation accuracy by 25%
+- Migrated legacy Rails monolith to React/GraphQL, reducing page load by 60%
+- Mentored 3 junior developers and established team coding standards
+
+## Moxy Studio | Frontend Developer | 2018 - 2020
+- Created reusable component library used across 10+ client projects
+- Implemented responsive designs achieving 98% Lighthouse accessibility scores
+- Reduced build times by 70% through webpack optimization
+
+## Gistia Healthcare | Junior Developer | 2016 - 2018
+- Developed patient portal used by 50k+ users monthly
+- Built automated testing suite covering 85% of critical paths
+- Collaborated with UX team to improve user satisfaction scores by 30%
+
+# EDUCATION
+
+## B.S. Computer Science | Federal University of Pernambuco | 2016
+
+# LANGUAGES
+
+- Portuguese (Native)
+- English (Fluent)
+- German (Intermediate)
