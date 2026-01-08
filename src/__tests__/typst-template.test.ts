@@ -97,10 +97,16 @@ describe("generateTypst", () => {
     expect(result).toContain("Senior engineer with expertise in React");
   });
 
+  it("includes profile section header", () => {
+    const result = generateTypst(profile, tailored);
+
+    expect(result).toContain("#section[Profile]");
+  });
+
   it("includes skills section", () => {
     const result = generateTypst(profile, tailored);
 
-    expect(result).toContain("#section[Main technologies & Skills]");
+    expect(result).toContain("#section[Skills]");
     expect(result).toContain("TypeScript, React, Node.js");
   });
 
@@ -108,7 +114,9 @@ describe("generateTypst", () => {
     const result = generateTypst(profile, tailored);
 
     expect(result).toContain("#section[Professional Experience]");
-    expect(result).toContain("#resume-entry[Acme Corp][Senior Engineer][Remote][2020 - Present]");
+    expect(result).toContain("*Senior Engineer, Acme Corp*");
+    expect(result).toContain("2020 - Present");
+    expect(result).toContain("#align(right)[Remote]");
     expect(result).toContain("- Led team of 5");
     expect(result).toContain("- Built scalable API");
   });
@@ -126,8 +134,7 @@ describe("generateTypst", () => {
     const result = generateTypst(profile, tailored);
 
     expect(result).toContain("#section[Languages]");
-    expect(result).toContain("■");
-    expect(result).toContain("English (Native)");
+    expect(result).toContain("- *English* (Native)");
   });
 
   it("handles missing optional profile fields", () => {
@@ -146,6 +153,18 @@ describe("generateTypst", () => {
     const result = generateTypst(emailProfile, tailored);
 
     expect(result).toContain("jane\\@test.com");
+  });
+
+  it("strips angle brackets from email", () => {
+    const emailProfile: Resume["profile"] = {
+      name: "Jane",
+      email: "<jane@test.com>",
+    };
+    const result = generateTypst(emailProfile, tailored);
+
+    expect(result).toContain("jane\\@test.com");
+    expect(result).not.toContain("\\<jane");
+    expect(result).not.toContain("com\\>");
   });
 
   it("handles multiple experiences", () => {
@@ -171,8 +190,12 @@ describe("generateTypst", () => {
 
     const result = generateTypst(profile, multiExpTailored);
 
-    expect(result).toContain("#resume-entry[Company A][Role A][NYC][2022]");
-    expect(result).toContain("#resume-entry[Company B][Role B][Remote][2020]");
+    expect(result).toContain("*Role A, Company A*");
+    expect(result).toContain("2022");
+    expect(result).toContain("#align(right)[NYC]");
+    expect(result).toContain("*Role B, Company B*");
+    expect(result).toContain("2020");
+    expect(result).toContain("#align(right)[Remote]");
   });
 
   it("handles experience with no bullets", () => {
@@ -185,7 +208,8 @@ describe("generateTypst", () => {
 
     const result = generateTypst(profile, noBulletsTailored);
 
-    expect(result).toContain("#resume-entry[Company][Role][][2020]");
+    expect(result).toContain("*Role, Company*");
+    expect(result).toContain("2020");
   });
 
   it("escapes special characters in content", () => {
@@ -216,6 +240,7 @@ describe("generateTypst", () => {
     expect(result).toContain("Stanford");
     expect(result).toContain("2020 - 2022");
     expect(result).toContain("*B.S.*");
+    expect(result).toContain("MIT");
     expect(result).toContain("2018 - 2020");
   });
 
@@ -227,9 +252,8 @@ describe("generateTypst", () => {
 
     const result = generateTypst(profile, multiLangTailored);
 
-    expect(result).toContain("■");
-    expect(result).toContain("English (Native)");
-    expect(result).toContain("Spanish (Fluent)");
-    expect(result).toContain("French (Basic)");
+    expect(result).toContain("- *English* (Native)");
+    expect(result).toContain("- *Spanish* (Fluent)");
+    expect(result).toContain("- *French* (Basic)");
   });
 });

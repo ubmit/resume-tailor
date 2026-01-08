@@ -32,18 +32,23 @@ export function escapeTypst(text: string): string {
 
 export function generateTypst(
   profile: Resume["profile"],
-  tailored: TailoredResume
+  tailored: TailoredResume,
 ): string {
   const name = escapeTypst(profile.name);
   const summary = escapeTypst(tailored.summary);
 
   const contactParts: string[] = [];
-  if (profile.email) contactParts.push(escapeTypst(profile.email));
+  if (profile.email)
+    contactParts.push(escapeTypst(profile.email.replace(/[<>]/g, "")));
   if (profile.phone) contactParts.push(escapeTypst(profile.phone));
   if (profile.github)
-    contactParts.push(`#link("https://${profile.github}")[${escapeTypst(profile.github)}]`);
+    contactParts.push(
+      `#link("https://${profile.github}")[${escapeTypst(profile.github)}]`,
+    );
   if (profile.linkedin)
-    contactParts.push(`#link("https://${profile.linkedin}")[${escapeTypst(profile.linkedin)}]`);
+    contactParts.push(
+      `#link("https://${profile.linkedin}")[${escapeTypst(profile.linkedin)}]`,
+    );
   if (profile.location) contactParts.push(escapeTypst(profile.location));
 
   const contact = contactParts.join(" | ");
@@ -52,22 +57,50 @@ export function generateTypst(
 
   const experience = tailored.experience
     .map((exp) => {
-      const bullets = exp.bullets
-        .map((b) => `  - ${escapeTypst(b)}`)
-        .join("\n");
-      return `#resume-entry[${escapeTypst(exp.company)}][${escapeTypst(exp.role)}][${escapeTypst(exp.location)}][${escapeTypst(exp.period)}]
+      const bullets = exp.bullets.map((b) => `- ${escapeTypst(b)}`).join("\n");
+      return `#grid(
+  columns: (1fr, auto),
+  align: (left, right),
+  [*${escapeTypst(exp.role)}, ${escapeTypst(exp.company)}*],
+  [${escapeTypst(exp.period)}]
+)
+#v(-8pt)
+#align(right)[${escapeTypst(exp.location)}]
 ${bullets}`;
+    })
+    .join("\n\n#v(4pt)\n\n");
+
+  const education = tailored.education
+    .map((edu) => {
+      const dateRange = `${escapeTypst(edu.startDate)} - ${escapeTypst(edu.endDate)}`;
+      const status = edu.status ? `_(${escapeTypst(edu.status)})_` : "";
+      return `#grid(
+  columns: (1fr, auto),
+  align: (left, right),
+  [*${escapeTypst(edu.degree)}*],
+  [${dateRange}]
+)
+#v(-8pt)
+#grid(
+  columns: (1fr, auto),
+  align: (left, right),
+  [${escapeTypst(edu.institution)}],
+  [${status}]
+)`;
     })
     .join("\n\n");
 
-  const education = tailored.education
-    .map(
-      (edu) => `*${escapeTypst(edu.degree)}* #h(1fr) ${escapeTypst(edu.startDate)} - ${escapeTypst(edu.endDate)}
-${escapeTypst(edu.institution)} #h(1fr) ${edu.status ? `_(${escapeTypst(edu.status)})_` : ""}`
-    )
-    .join("\n\n");
-
-  const languages = `■ ${tailored.languages.map((l) => escapeTypst(l)).join("    ")}`;
+  const languages = tailored.languages
+    .map((l) => {
+      const match = l.match(/^(.+?)\s*(\(.+\))$/);
+      if (match) {
+        const langName = escapeTypst(match[1]);
+        const proficiency = escapeTypst(match[2]);
+        return `- *${langName}* ${proficiency}`;
+      }
+      return `- ${escapeTypst(l)}`;
+    })
+    .join("\n");
 
   return `#set page(margin: (x: 0.75in, y: 0.75in))
 #set text(font: "New Computer Modern", size: 10pt)
@@ -81,15 +114,6 @@ ${escapeTypst(edu.institution)} #h(1fr) ${edu.status ? `_(${escapeTypst(edu.stat
   v(4pt)
 }
 
-#let resume-entry(company, role, location, period) = {
-  grid(
-    columns: (1fr, auto),
-    align: (left, right),
-    [*#company* | #role | #location],
-    [#period]
-  )
-}
-
 // Header
 #align(center)[
   #text(size: 18pt, weight: "bold")[${name}]
@@ -97,17 +121,17 @@ ${escapeTypst(edu.institution)} #h(1fr) ${edu.status ? `_(${escapeTypst(edu.stat
   ${contact}
 ]
 
-#v(4pt)
+#section[Profile]
 ${summary}
-
-#section[Main technologies & Skills]
-${skills}
 
 #section[Professional Experience]
 ${experience}
 
 #section[Education]
 ${education}
+
+#section[Skills]
+${skills}
 
 #section[Languages]
 ${languages}
