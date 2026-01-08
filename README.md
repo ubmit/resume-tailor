@@ -35,7 +35,7 @@ Edit `RESUME.md` with your information following the format.
 ### 2. Generate the prompt
 
 ```bash
-pnpm prepare:prompt -j job-description.txt > prompt.txt
+pnpm --silent prepare:prompt -j job-description.txt > prompt.txt
 ```
 
 ### 3. Get LLM response
