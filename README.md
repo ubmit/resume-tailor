@@ -105,6 +105,8 @@ pnpm extract -p <pdf-file> [-o <output-file>]
 
 **Name**: Your Name
 **Email**: your.email@example.com
+**Phone**: +1 555-123-4567
+**Location**: City, Country
 **GitHub**: github.com/username
 **LinkedIn**: linkedin.com/in/username
 **Summary**: Brief professional summary
@@ -116,11 +118,11 @@ pnpm extract -p <pdf-file> [-o <output-file>]
 
 # PROFESSIONAL EXPERIENCE
 
-## Company Name | Role | Start - End
+## Company Name | Role | Location | Start - End
 - Achievement or responsibility
 - Another bullet point
 
-## Another Company | Role | Start - End
+## Another Company | Role | Remote | Start - End
 - Achievement or responsibility
 
 # EDUCATION

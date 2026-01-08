@@ -6,6 +6,7 @@ export interface TailoredResume {
   experience: {
     company: string;
     role: string;
+    location: string;
     period: string;
     bullets: string[];
   }[];
@@ -36,6 +37,8 @@ export function generateTypst(
 
   const contactParts: string[] = [];
   if (profile.email) contactParts.push(escapeTypst(profile.email));
+  if (profile.phone) contactParts.push(escapeTypst(profile.phone));
+  if (profile.location) contactParts.push(escapeTypst(profile.location));
   if (profile.github)
     contactParts.push(`#link("https://${profile.github}")[${escapeTypst(profile.github)}]`);
   if (profile.linkedin)
@@ -50,7 +53,7 @@ export function generateTypst(
       const bullets = exp.bullets
         .map((b) => `  - ${escapeTypst(b)}`)
         .join("\n");
-      return `#resume-entry[${escapeTypst(exp.company)}][${escapeTypst(exp.role)}][${escapeTypst(exp.period)}]
+      return `#resume-entry[${escapeTypst(exp.company)}][${escapeTypst(exp.role)}][${escapeTypst(exp.location)}][${escapeTypst(exp.period)}]
 ${bullets}`;
     })
     .join("\n\n");
@@ -62,9 +65,7 @@ ${bullets}`;
     )
     .join("\n");
 
-  const languages = tailored.languages
-    .map((l) => `- ${escapeTypst(l)}`)
-    .join("\n");
+  const languages = tailored.languages.map((l) => escapeTypst(l)).join(" | ");
 
   return `#set page(margin: (x: 0.75in, y: 0.75in))
 #set text(font: "New Computer Modern", size: 10pt)
@@ -78,11 +79,11 @@ ${bullets}`;
   v(4pt)
 }
 
-#let resume-entry(company, role, period) = {
+#let resume-entry(company, role, location, period) = {
   grid(
     columns: (1fr, auto),
     align: (left, right),
-    [*#company* | #role],
+    [*#company* | #role | #location],
     [#period]
   )
 }
@@ -97,7 +98,7 @@ ${bullets}`;
 #v(4pt)
 ${summary}
 
-#section[Skills]
+#section[Main technologies & Skills]
 ${skills}
 
 #section[Professional Experience]

@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 export interface Experience {
   company: string;
   role: string;
+  location: string;
   period: string;
   bullets: string[];
 }
@@ -16,6 +17,8 @@ export interface Education {
 export interface Resume {
   profile: {
     name: string;
+    phone?: string;
+    location?: string;
     github?: string;
     linkedin?: string;
     email?: string;
@@ -65,12 +68,16 @@ function parseProfile(section: string): Resume["profile"] {
 
   for (const line of lines) {
     const nameMatch = line.match(/\*\*Name\*\*:\s*(.+)/);
+    const phoneMatch = line.match(/\*\*Phone\*\*:\s*(.+)/);
+    const locationMatch = line.match(/\*\*Location\*\*:\s*(.+)/);
     const githubMatch = line.match(/\*\*GitHub\*\*:\s*(.+)/);
     const linkedinMatch = line.match(/\*\*LinkedIn\*\*:\s*(.+)/);
     const emailMatch = line.match(/\*\*Email\*\*:\s*(.+)/);
     const summaryMatch = line.match(/\*\*Summary\*\*:\s*(.+)/);
 
     if (nameMatch) profile.name = nameMatch[1].trim();
+    if (phoneMatch) profile.phone = phoneMatch[1].trim();
+    if (locationMatch) profile.location = locationMatch[1].trim();
     if (githubMatch) profile.github = githubMatch[1].trim();
     if (linkedinMatch) profile.linkedin = linkedinMatch[1].trim();
     if (emailMatch) profile.email = emailMatch[1].trim();
@@ -94,18 +101,30 @@ function parseExperience(section: string): Experience[] {
   for (const entry of entries) {
     const lines = entry.split("\n");
     const header = lines[0].trim();
-    const headerMatch = header.match(/(.+?)\s*\|\s*(.+?)\s*\|\s*(.+)/);
+    const fourPartMatch = header.match(
+      /(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+)/
+    );
+    const threePartMatch = header.match(/(.+?)\s*\|\s*(.+?)\s*\|\s*(.+)/);
 
-    if (headerMatch) {
-      const bullets = lines
-        .slice(1)
-        .filter((l) => l.trim().startsWith("-"))
-        .map((l) => l.replace(/^-\s*/, "").trim());
+    const bullets = lines
+      .slice(1)
+      .filter((l) => l.trim().startsWith("-"))
+      .map((l) => l.replace(/^-\s*/, "").trim());
 
+    if (fourPartMatch) {
       experiences.push({
-        company: headerMatch[1].trim(),
-        role: headerMatch[2].trim(),
-        period: headerMatch[3].trim(),
+        company: fourPartMatch[1].trim(),
+        role: fourPartMatch[2].trim(),
+        location: fourPartMatch[3].trim(),
+        period: fourPartMatch[4].trim(),
+        bullets,
+      });
+    } else if (threePartMatch) {
+      experiences.push({
+        company: threePartMatch[1].trim(),
+        role: threePartMatch[2].trim(),
+        location: "",
+        period: threePartMatch[3].trim(),
         bullets,
       });
     }

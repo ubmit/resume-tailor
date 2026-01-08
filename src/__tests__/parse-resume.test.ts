@@ -10,11 +10,13 @@ import { readFileSync } from "node:fs";
 const mockReadFileSync = vi.mocked(readFileSync);
 
 describe("parseResumeContent", () => {
-  it("parses complete resume", () => {
+  it("parses complete resume with 4-part experience header", () => {
     const content = `# PROFILE
 
 **Name**: John Doe
 **Email**: john@example.com
+**Phone**: +1 555-1234
+**Location**: New York, USA
 **GitHub**: github.com/johndoe
 **LinkedIn**: linkedin.com/in/johndoe
 **Summary**: Senior engineer with 10 years experience
@@ -26,11 +28,11 @@ describe("parseResumeContent", () => {
 
 # PROFESSIONAL EXPERIENCE
 
-## Acme Corp | Senior Engineer | 2020 - Present
+## Acme Corp | Senior Engineer | Remote | 2020 - Present
 - Led team of 5 engineers
 - Built scalable API
 
-## Startup Inc | Engineer | 2018 - 2020
+## Startup Inc | Engineer | San Francisco | 2018 - 2020
 - Developed frontend
 - Improved performance by 50%
 
@@ -49,6 +51,8 @@ describe("parseResumeContent", () => {
     expect(result.profile).toEqual({
       name: "John Doe",
       email: "john@example.com",
+      phone: "+1 555-1234",
+      location: "New York, USA",
       github: "github.com/johndoe",
       linkedin: "linkedin.com/in/johndoe",
       summary: "Senior engineer with 10 years experience",
@@ -60,12 +64,14 @@ describe("parseResumeContent", () => {
     expect(result.experience[0]).toEqual({
       company: "Acme Corp",
       role: "Senior Engineer",
+      location: "Remote",
       period: "2020 - Present",
       bullets: ["Led team of 5 engineers", "Built scalable API"],
     });
     expect(result.experience[1]).toEqual({
       company: "Startup Inc",
       role: "Engineer",
+      location: "San Francisco",
       period: "2018 - 2020",
       bullets: ["Developed frontend", "Improved performance by 50%"],
     });
@@ -75,6 +81,24 @@ describe("parseResumeContent", () => {
     ]);
 
     expect(result.languages).toEqual(["English (Native)", "Spanish (Fluent)"]);
+  });
+
+  it("parses 3-part experience header with empty location", () => {
+    const content = `# PROFESSIONAL EXPERIENCE
+
+## Company | Role | 2020 - 2021
+- Some bullet
+`;
+
+    const result = parseResumeContent(content);
+
+    expect(result.experience[0]).toEqual({
+      company: "Company",
+      role: "Role",
+      location: "",
+      period: "2020 - 2021",
+      bullets: ["Some bullet"],
+    });
   });
 
   it("handles missing optional profile fields", () => {
@@ -87,6 +111,8 @@ describe("parseResumeContent", () => {
 
     expect(result.profile.name).toBe("Jane Doe");
     expect(result.profile.email).toBeUndefined();
+    expect(result.profile.phone).toBeUndefined();
+    expect(result.profile.location).toBeUndefined();
     expect(result.profile.github).toBeUndefined();
     expect(result.profile.linkedin).toBeUndefined();
     expect(result.profile.summary).toBeUndefined();
@@ -118,15 +144,16 @@ describe("parseResumeContent", () => {
     expect(result.languages).toEqual([]);
   });
 
-  it("handles experience without bullets", () => {
+  it("handles experience without bullets (4-part header)", () => {
     const content = `# PROFESSIONAL EXPERIENCE
 
-## Company | Role | 2020 - 2021
+## Company | Role | Location | 2020 - 2021
 `;
 
     const result = parseResumeContent(content);
 
     expect(result.experience[0].bullets).toEqual([]);
+    expect(result.experience[0].location).toBe("Location");
   });
 
   it("handles malformed experience header", () => {

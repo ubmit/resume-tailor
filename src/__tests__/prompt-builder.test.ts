@@ -7,6 +7,8 @@ describe("buildPrompt", () => {
     profile: {
       name: "John Doe",
       email: "john@example.com",
+      phone: "+1 555-1234",
+      location: "New York, USA",
       github: "github.com/johndoe",
       linkedin: "linkedin.com/in/johndoe",
       summary: "Senior engineer",
@@ -16,6 +18,7 @@ describe("buildPrompt", () => {
       {
         company: "Acme Corp",
         role: "Senior Engineer",
+        location: "Remote",
         period: "2020 - Present",
         bullets: ["Led team", "Built API"],
       },
@@ -34,7 +37,7 @@ describe("buildPrompt", () => {
     expect(prompt).toContain("**Summary**: Senior engineer");
     expect(prompt).toContain("- TypeScript");
     expect(prompt).toContain("- React");
-    expect(prompt).toContain("**Acme Corp** | Senior Engineer | 2020 - Present");
+    expect(prompt).toContain("**Acme Corp** | Senior Engineer | Remote | 2020 - Present");
     expect(prompt).toContain("- Led team");
     expect(prompt).toContain("- Built API");
     expect(prompt).toContain("- B.S. CS | MIT | 2018");
@@ -93,12 +96,14 @@ describe("buildPrompt", () => {
         {
           company: "Company A",
           role: "Role A",
+          location: "NYC",
           period: "2022 - Present",
           bullets: ["Bullet A"],
         },
         {
           company: "Company B",
           role: "Role B",
+          location: "Remote",
           period: "2020 - 2022",
           bullets: ["Bullet B"],
         },
@@ -107,8 +112,8 @@ describe("buildPrompt", () => {
 
     const prompt = buildPrompt(resume, "Job");
 
-    expect(prompt).toContain("**Company A** | Role A | 2022 - Present");
-    expect(prompt).toContain("**Company B** | Role B | 2020 - 2022");
+    expect(prompt).toContain("**Company A** | Role A | NYC | 2022 - Present");
+    expect(prompt).toContain("**Company B** | Role B | Remote | 2020 - 2022");
   });
 
   it("handles experience with no bullets", () => {
@@ -118,6 +123,7 @@ describe("buildPrompt", () => {
         {
           company: "Company",
           role: "Role",
+          location: "",
           period: "2020",
           bullets: [],
         },
@@ -126,7 +132,7 @@ describe("buildPrompt", () => {
 
     const prompt = buildPrompt(resume, "Job");
 
-    expect(prompt).toContain("**Company** | Role | 2020");
+    expect(prompt).toContain("**Company** | Role |  | 2020");
   });
 
   it("handles multiple education entries", () => {

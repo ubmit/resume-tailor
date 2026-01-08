@@ -46,6 +46,8 @@ describe("generateTypst", () => {
   const profile: Resume["profile"] = {
     name: "John Doe",
     email: "john@example.com",
+    phone: "+1 555-1234",
+    location: "New York, USA",
     github: "github.com/johndoe",
     linkedin: "linkedin.com/in/johndoe",
   };
@@ -57,6 +59,7 @@ describe("generateTypst", () => {
       {
         company: "Acme Corp",
         role: "Senior Engineer",
+        location: "Remote",
         period: "2020 - Present",
         bullets: ["Led team of 5", "Built scalable API"],
       },
@@ -82,6 +85,8 @@ describe("generateTypst", () => {
     const result = generateTypst(profile, tailored);
 
     expect(result).toContain("john\\@example.com");
+    expect(result).toContain("+1 555-1234");
+    expect(result).toContain("New York, USA");
     expect(result).toContain('#link("https://github.com/johndoe")');
     expect(result).toContain('#link("https://linkedin.com/in/johndoe")');
   });
@@ -95,15 +100,15 @@ describe("generateTypst", () => {
   it("includes skills section", () => {
     const result = generateTypst(profile, tailored);
 
-    expect(result).toContain("#section[Skills]");
+    expect(result).toContain("#section[Main technologies & Skills]");
     expect(result).toContain("TypeScript, React, Node.js");
   });
 
-  it("includes experience section", () => {
+  it("includes experience section with location", () => {
     const result = generateTypst(profile, tailored);
 
     expect(result).toContain("#section[Professional Experience]");
-    expect(result).toContain("#resume-entry[Acme Corp][Senior Engineer][2020 - Present]");
+    expect(result).toContain("#resume-entry[Acme Corp][Senior Engineer][Remote][2020 - Present]");
     expect(result).toContain("- Led team of 5");
     expect(result).toContain("- Built scalable API");
   });
@@ -115,11 +120,12 @@ describe("generateTypst", () => {
     expect(result).toContain("*B.S. CS* | MIT | 2018");
   });
 
-  it("includes languages section", () => {
+  it("includes languages section inline", () => {
     const result = generateTypst(profile, tailored);
 
     expect(result).toContain("#section[Languages]");
-    expect(result).toContain("- English (Native)");
+    expect(result).toContain("English (Native)");
+    expect(result).not.toContain("- English (Native)");
   });
 
   it("handles missing optional profile fields", () => {
@@ -147,12 +153,14 @@ describe("generateTypst", () => {
         {
           company: "Company A",
           role: "Role A",
+          location: "NYC",
           period: "2022",
           bullets: ["Bullet A"],
         },
         {
           company: "Company B",
           role: "Role B",
+          location: "Remote",
           period: "2020",
           bullets: ["Bullet B"],
         },
@@ -161,21 +169,21 @@ describe("generateTypst", () => {
 
     const result = generateTypst(profile, multiExpTailored);
 
-    expect(result).toContain("#resume-entry[Company A][Role A][2022]");
-    expect(result).toContain("#resume-entry[Company B][Role B][2020]");
+    expect(result).toContain("#resume-entry[Company A][Role A][NYC][2022]");
+    expect(result).toContain("#resume-entry[Company B][Role B][Remote][2020]");
   });
 
   it("handles experience with no bullets", () => {
     const noBulletsTailored: TailoredResume = {
       ...tailored,
       experience: [
-        { company: "Company", role: "Role", period: "2020", bullets: [] },
+        { company: "Company", role: "Role", location: "", period: "2020", bullets: [] },
       ],
     };
 
     const result = generateTypst(profile, noBulletsTailored);
 
-    expect(result).toContain("#resume-entry[Company][Role][2020]");
+    expect(result).toContain("#resume-entry[Company][Role][][2020]");
   });
 
   it("escapes special characters in content", () => {
@@ -206,7 +214,7 @@ describe("generateTypst", () => {
     expect(result).toContain("*B.S.* | MIT | 2018");
   });
 
-  it("handles multiple languages", () => {
+  it("handles multiple languages inline with separator", () => {
     const multiLangTailored: TailoredResume = {
       ...tailored,
       languages: ["English (Native)", "Spanish (Fluent)", "French (Basic)"],
@@ -214,8 +222,6 @@ describe("generateTypst", () => {
 
     const result = generateTypst(profile, multiLangTailored);
 
-    expect(result).toContain("- English (Native)");
-    expect(result).toContain("- Spanish (Fluent)");
-    expect(result).toContain("- French (Basic)");
+    expect(result).toContain("English (Native) | Spanish (Fluent) | French (Basic)");
   });
 });

@@ -22,6 +22,8 @@ export function buildPrompt(resume: Resume, jobDescription: string): string {
 
 **Name**: ${resume.profile.name}
 ${resume.profile.email ? `**Email**: ${resume.profile.email}` : ""}
+${resume.profile.phone ? `**Phone**: ${resume.profile.phone}` : ""}
+${resume.profile.location ? `**Location**: ${resume.profile.location}` : ""}
 ${resume.profile.github ? `**GitHub**: ${resume.profile.github}` : ""}
 ${resume.profile.linkedin ? `**LinkedIn**: ${resume.profile.linkedin}` : ""}
 ${resume.profile.summary ? `**Summary**: ${resume.profile.summary}` : ""}
@@ -33,7 +35,7 @@ ${resume.skills.map((s) => `- ${s}`).join("\n")}
 ${resume.experience
   .map(
     (exp) => `
-**${exp.company}** | ${exp.role} | ${exp.period}
+**${exp.company}** | ${exp.role} | ${exp.location} | ${exp.period}
 ${exp.bullets.map((b) => `- ${b}`).join("\n")}`
   )
   .join("\n")}
@@ -59,6 +61,7 @@ Respond with ONLY a JSON object (no markdown code blocks, no explanation) in thi
     {
       "company": "Company Name",
       "role": "Role Title",
+      "location": "Location",
       "period": "Start - End",
       "bullets": ["STAR-formatted bullet 1", "STAR-formatted bullet 2"]
     }
